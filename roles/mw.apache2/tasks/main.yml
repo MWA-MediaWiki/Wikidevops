@@ -11,7 +11,7 @@
 #    name: www-data
 #    uid: 1101
 
-- name:
+- name: www-data uid
   command: usermod -u 1101 www-data
 
 - name: www-data gid
