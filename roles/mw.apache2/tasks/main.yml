@@ -14,7 +14,7 @@
 - name: www-data gid
   ansible.builtin.group:
     name: www-data
-    group: 1100
+    gid: 1100
 
 #- name: Copy Apache2 conf
 #  template:
