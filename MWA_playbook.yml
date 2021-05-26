@@ -5,7 +5,7 @@
   roles:
     - role: mw.prerequis
     - role: mw.php
-    - role: mw.mysql   
+    - role: mw.mysql
     - role: mw.apache2
     - role: mw.mediawiki
       main: /home/appli
@@ -19,6 +19,6 @@
       mysql_bdd: WIKI_DB
       mysql_user: WIKI_DB_USER
       mysql_pass: WIKI_DB_PASSWD
-      repository: https://github.com/Bubu25/Projet-MEP-MediaWiki/raw/Lyndsey-develop/INPUT/PACKAGE
+      repository: https://github.com/MWA-MediaWiki/Wikidevops/raw/livraison
       wiki_nom: MWA
       wiki_pass: motdepassewiki
