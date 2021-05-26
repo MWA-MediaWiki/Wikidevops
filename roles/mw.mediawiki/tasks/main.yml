@@ -5,7 +5,7 @@
   file:
     path: "{{ item }}"
     state: directory
-    creates: "{{ item }}"
+#    creates: "{{ item }}"
   loop:
     - "{{server_disc}}"
     - "{{logs}}"
