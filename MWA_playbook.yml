@@ -1,0 +1,24 @@
+---
+
+- hosts: mediawiki
+  become: true
+  roles:
+    - role: mw.prerequis
+    - role: mw.php
+    - role: mw.mysql   
+    - role: mw.apache2
+    - role: mw.mediawiki
+      main: /home/appli
+      projects: "{{main}}/projects"
+      MWA_projects: "{{projects}}/MWA"
+      apache2_projects: "{{MWA_projects}}/apache2"
+      mediawiki: "{{apache2_projects}}/MWA_mediawiki"
+      MWA_livr: "{{main}}/MWA_mediawiki"
+      livr: "{{MWA_livr}}/LIVR"
+      version: "{{livr}}/Downloads"
+      mysql_bdd: WIKI_DB
+      mysql_user: WIKI_DB_USER
+      mysql_pass: WIKI_DB_PASSWD
+      repository: https://github.com/Bubu25/Projet-MEP-MediaWiki/raw/Lyndsey-develop/INPUT/PACKAGE
+      wiki_nom: MWA
+      wiki_pass: motdepassewiki

@@ -1,0 +1,119 @@
+---
+# tasks file for mw.mediawiki
+#Création directory, recup des tar et decompress
+- name : directory appli
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{main}}"
+    - "{{projects}}"
+    - "{{MWA_projects}}"
+    - "{{apache2_projects}}"
+    - "{{MWA_livr}}"
+    - "{{livr}}"
+    - "{{version}}"
+
+- name: git repo
+  get_url:
+    url: "{{ item }}"
+    dest: "{{version}}"
+  loop:
+    - "{{repository}}/MWA_01.00.00_MEDIAWIKI.tar.gz"
+    - "{{repository}}/MWA_01.00.00_IMAGES.tar.gz"
+    - "{{repository}}/MWA_01.00.00_LOGO.tar.gz"
+    - "{{repository}}/MWA_01.00.00_DONNEES.tar.gz"
+
+- name: untar package
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{version}}"
+    remote_src: yes
+  loop:
+    - "{{version}}/MWA_01.00.00_MEDIAWIKI.tar.gz"
+    - "{{version}}/MWA_01.00.00_IMAGES.tar.gz"
+    - "{{version}}/MWA_01.00.00_LOGO.tar.gz"
+    - "{{version}}/MWA_01.00.00_DONNEES.tar.gz"
+
+#Création bdd et user
+- name: Create MySQL DB
+  mysql_db:
+    name: "{{mysql_bdd}}"
+    state: present
+
+- name: Create MySQL user
+  mysql_user:
+    name: "{{mysql_user}}"
+    host: localhost
+    password: "{{mysql_pass}}"
+    priv: "{{mysql_bdd}}.*:ALL"
+
+
+- name: Renommage wikidevops
+  command: "mv {{version}}/wikidevops/ {{version}}/MWA_mediawiki"
+  args:
+    creates: "{{version}}/MWA_mediawiki"
+    removes: "{{version}}/wikidevops"
+
+- name: Move web folder
+  command: "mv {{version}}/MWA_mediawiki/ {{apache2_projects}}/"
+
+#- name : Directory image
+#  file:
+#    path: "{{ item }}"
+ #   state: directory
+ # loop:
+ #   - "{{mediawiki}}/images/2"
+ #   - "{{mediawiki}}/images/2/21"
+
+- name: Move LoGo
+  copy:
+    src: "{{version}}/LoGo/GRA-135.png"
+    dest: "{{mediawiki}}/resources/assets"
+    remote_src: yes
+
+- name: Move image
+  copy:
+    src: "{{version}}/images/DevOps.png"
+    dest: "{{mediawiki}}/images"
+    remote_src: yes
+
+
+- name: Move Donnees.xml
+  copy:
+    src: "{{version}}/Donnees.xml"
+    dest: "{{mediawiki}}"
+    remote_src: yes
+
+- name: chmod
+  file:
+    dest: "{{apache2_projects}}"
+    owner: root
+    group: www-data
+    mode: 0775
+    recurse: yes
+
+- name: création du lien symbolique
+  file:
+    src: "{{mediawiki}}"
+    dest: /var/www/html/mediawiki
+    state: link
+  notify: restart apache2   
+
+- name: install par script
+  command: "{{ item }}"
+  loop:
+    - "php install.php --dbname {{mysql_bdd}} --dbuser {{mysql_user}} --dbpass {{mysql_pass}} --dbserver localhost --server='http://{{ansible_host}}' --dbtype mysql --wiki {{wiki_nom}} --pass {{wiki_pass}} --lang fr --scriptpath /mediawiki --confpath {{mediawiki}} {{wiki_nom}} admin"
+    - "php importDump.php --wiki {{wiki_nom}} --server 'http://{{ansible_host}}' --dbuser {{mysql_user}} --dbpass {{mysql_pass}} {{mediawiki}}/Donnees.xml"
+    - "php rebuildrecentchanges.php"
+    - "php initSiteStats.php"
+    - "php importImages.php {{mediawiki}}/images"
+  args:
+    chdir: "{{mediawiki}}/maintenance"
+
+- name: sed
+  shell: sed -i 's/wiki\.png/GRA-135\.png/' "{{mediawiki}}/LocalSettings.php"
+
+#- name: Enable site
+ # command: "a2ensite mediawiki.conf"
+ #notify: restart apache2
