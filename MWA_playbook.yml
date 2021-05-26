@@ -8,7 +8,9 @@
     - role: mw.mysql
     - role: mw.apache2
     - role: mw.mediawiki
-      main: /home/appli
+      server: /mnt/APPLI-SERVER
+      logs: /mnt/LOG
+      main: "{{server}}/appli"
       projects: "{{main}}/projects"
       MWA_projects: "{{projects}}/MWA"
       apache2_projects: "{{MWA_projects}}/apache2"

@@ -1,6 +1,15 @@
 ---
 # tasks file for mw.mediawiki
 #Création directory, recup des tar et decompress
+- name : Directory FS
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{server_disc}}"
+    - "{{logs}}"
+  creates: yes
+
 - name : directory appli
   file:
     path: "{{ item }}"
