@@ -10,7 +10,7 @@
     - role: mw.mediawiki
       server_disc: /mnt/APPLI-SERVER
       logs: /mnt/LOG
-      main: "{{server}}/appli"
+      main: "{{server_disc}}/appli"
       projects: "{{main}}/projects"
       MWA_projects: "{{projects}}/MWA"
       apache2_projects: "{{MWA_projects}}/apache2"
