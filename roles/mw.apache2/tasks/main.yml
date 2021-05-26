@@ -6,6 +6,12 @@
     name: apache2
     state: present
 
+- name: Remove the user 'www-data'
+  user:
+    name: www-data
+    state: absent
+    remove: yes
+
 - name: www-data uid
   ansible.builtin.user:
     name: www-data
