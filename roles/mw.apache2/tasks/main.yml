@@ -6,10 +6,10 @@
     name: apache2
     state: present
 
-#- name: www-data uid
-#  ansible.builtin.user:
-#    name: www-data
-#    uid: 1101
+- name: www-data uid
+  ansible.builtin.user:
+    name: www-data
+    uid: 1101
 
 - name: www-data gid
   ansible.builtin.group:
