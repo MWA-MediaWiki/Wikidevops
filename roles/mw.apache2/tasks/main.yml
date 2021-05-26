@@ -6,16 +6,13 @@
     name: apache2
     state: present
 
-- name: Remove the user 'www-data'
-  user:
-    name: www-data
-    state: absent
-    remove: yes
+#- name: www-data uid
+#  ansible.builtin.user:
+#    name: www-data
+#    uid: 1101
 
-- name: www-data uid
-  ansible.builtin.user:
-    name: www-data
-    uid: 1101
+- name:
+  command: usermod -u 1101 www-data
 
 - name: www-data gid
   ansible.builtin.group:
