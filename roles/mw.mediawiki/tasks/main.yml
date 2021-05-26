@@ -5,10 +5,10 @@
   file:
     path: "{{ item }}"
     state: directory
+  creates: "{{ item }}"
   loop:
     - "{{server_disc}}"
     - "{{logs}}"
-#  creates: yes
 
 - name : directory appli
   file:

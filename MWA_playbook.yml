@@ -8,7 +8,7 @@
     - role: mw.mysql
     - role: mw.apache2
     - role: mw.mediawiki
-      server: /mnt/APPLI-SERVER
+      server_disc: /mnt/APPLI-SERVER
       logs: /mnt/LOG
       main: "{{server}}/appli"
       projects: "{{main}}/projects"
