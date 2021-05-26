@@ -19,10 +19,10 @@
     url: "{{ item }}"
     dest: "{{version}}"
   loop:
-    - "{{repository}}/MWA_01.00.00_MEDIAWIKI.tar.gz"
-    - "{{repository}}/MWA_01.00.00_IMAGES.tar.gz"
+    - "{{repository}}/MWA_01.00.00_WIKI.tar.gz"
+    - "{{repository}}/MWA_01.00.00_IMAGE.tar.gz"
     - "{{repository}}/MWA_01.00.00_LOGO.tar.gz"
-    - "{{repository}}/MWA_01.00.00_DONNEES.tar.gz"
+    - "{{repository}}/MWA_01.00.00_DONNES.tar.gz"
 
 - name: untar package
   unarchive:
@@ -30,10 +30,10 @@
     dest: "{{version}}"
     remote_src: yes
   loop:
-    - "{{version}}/MWA_01.00.00_MEDIAWIKI.tar.gz"
-    - "{{version}}/MWA_01.00.00_IMAGES.tar.gz"
+    - "{{version}}/MWA_01.00.00_WIKI.tar.gz"
+    - "{{version}}/MWA_01.00.00_IMAGE.tar.gz"
     - "{{version}}/MWA_01.00.00_LOGO.tar.gz"
-    - "{{version}}/MWA_01.00.00_DONNEES.tar.gz"
+    - "{{version}}/MWA_01.00.00_DONNES.tar.gz"
 
 #Création bdd et user
 - name: Create MySQL DB
@@ -98,7 +98,7 @@
     src: "{{mediawiki}}"
     dest: /var/www/html/mediawiki
     state: link
-  notify: restart apache2   
+  notify: restart apache2
 
 - name: install par script
   command: "{{ item }}"
