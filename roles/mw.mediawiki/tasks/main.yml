@@ -109,16 +109,53 @@
     state: link
   notify: restart apache2
 
+
+# check signature application
+- name: stat signature application
+  stat: path="/etc/conf_machine/MWA_mediawiki.01.00.00"
+  register: signature
+
+# installation de l'application
+- name: install mediawiki
+  command: "php install.php --dbname {{mysql_bdd}} --dbuser {{mysql_user}} --dbpass {{mysql_pass}} --dbserver localhost --server='http://{{ansible_host}}' --dbtype mysql --wiki {{wiki_nom}} --pass {{wiki_pass}} --lang fr --scriptpath /mediawiki --confpath {{mediawiki}} {{wiki_nom}} admin"
+  args:
+    chdir: "{{mediawiki}}/maintenance"
+  when: not signature.stat.exists
+
+# signature file
+- name: directory of signature files
+  file:
+    path: /etc/conf_machine
+    state: directory
+
+- name: Creating an empty file
+  file:
+    path: "/etc/conf_machine/MWA_mediawiki.01.00.00"
+    state: touch
+  become: yes
+
+# dumps données
 - name: install par script
   command: "{{ item }}"
   loop:
-    - "php install.php --dbname {{mysql_bdd}} --dbuser {{mysql_user}} --dbpass {{mysql_pass}} --dbserver localhost --server='http://{{ansible_host}}' --dbtype mysql --wiki {{wiki_nom}} --pass {{wiki_pass}} --lang fr --scriptpath /mediawiki --confpath {{mediawiki}} {{wiki_nom}} admin"
     - "php importDump.php --wiki {{wiki_nom}} --server 'http://{{ansible_host}}' --dbuser {{mysql_user}} --dbpass {{mysql_pass}} {{mediawiki}}/Donnees.xml"
     - "php rebuildrecentchanges.php"
     - "php initSiteStats.php"
     - "php importImages.php {{mediawiki}}/images"
   args:
     chdir: "{{mediawiki}}/maintenance"
+
+
+#- name: install par script
+#  command: "{{ item }}"
+#  loop:
+#    - "php install.php --dbname {{mysql_bdd}} --dbuser {{mysql_user}} --dbpass {{mysql_pass}} --dbserver localhost --server='http://{{ansible_host}}' --dbtype mysql --wiki {{wiki_nom}} --pass {{wiki_pass}} --lang fr --scriptpath /mediawiki --confpath {{mediawiki}} {{wiki_nom}} admin"
+#    - "php importDump.php --wiki {{wiki_nom}} --server 'http://{{ansible_host}}' --dbuser {{mysql_user}} --dbpass {{mysql_pass}} {{mediawiki}}/Donnees.xml"
+#    - "php rebuildrecentchanges.php"
+#    - "php initSiteStats.php"
+#    - "php importImages.php {{mediawiki}}/images"
+#  args:
+#    chdir: "{{mediawiki}}/maintenance"
 
 - name: "edit LocalSettings.php"
   lineinfile:
