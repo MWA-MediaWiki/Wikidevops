@@ -6,6 +6,9 @@
     - role: mw.prerequis
     - role: mw.php
     - role: mw.mysql
+      server_disc: /mnt/APPLI-SERVER    
+      main: "{{server_disc}}/appli"
+      projects: "{{main}}/projects"    
       MWA_projects: "{{projects}}/MWA"
     - role: mw.apache2
     - role: mw.mediawiki
