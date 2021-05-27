@@ -53,7 +53,7 @@
 # deplace directory mysql
 - name : create directory structure mysql
   file:
-    path: /mnt/LOG
+    path: "{{MWA_projects}}"
     state: directory
     
 - name: "stop mysql service"
@@ -64,7 +64,7 @@
 - name: Copy file with owner and permissions
   ansible.builtin.copy:
     src: /var/lib/mysql
-    dest: /mnt/LOG
+    dest: "{{MWA_projects}}"
     remote_src: yes
     owner: mysql
     group: mysql
@@ -83,13 +83,13 @@
   lineinfile:
     dest: /etc/mysql/mysql.conf.d/mysqld.cnf
     regexp: '^# datadir'
-    line: 'datadir     = /mnt/LOG/mysql'
+    line: 'datadir     = "{{MWA_projects}}"/mysql'
 
 - name: "edit apparmor alias"
   lineinfile:
     dest: /etc/apparmor.d/tunables/alias
     regexp: '^alias'
-    line: 'alias /var/lib/mysql/ -> /mnt/LOG/mysql,'
+    line: 'alias /var/lib/mysql/ -> "{{MWA_projects}}"/mysql,'
 
 - name: "restart apparmor"
   service:
