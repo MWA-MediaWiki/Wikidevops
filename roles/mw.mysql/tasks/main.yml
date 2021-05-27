@@ -51,11 +51,11 @@
   when: mysql_new_root_pass.changed
 
 # deplace directory mysql
-- name : create directory structure mysql
+- name: create directory structure mysql
   file:
     path: "{{MWA_projects}}"
     state: directory
-    
+
 - name: "stop mysql service"
   service:
     name: mysql
@@ -77,7 +77,7 @@
 - name: backup mysql
   command: mv /var/lib/mysql/ /var/lib/mysql.bak/
   when: not mysql_bak.stat.exists
-  
+
 
 - name: "edit mysql.conf"
   lineinfile:
