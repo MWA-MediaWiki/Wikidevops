@@ -10,7 +10,7 @@
   file:
     path: "{{server_disc}}"
     state: directory
-  when: not stat.server_disc.exists
+  when: not server_disc.stat.exists
 #    creates: "{{ item }}"
 
 

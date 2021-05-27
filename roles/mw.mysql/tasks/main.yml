@@ -59,7 +59,7 @@
   file:
     path: "{{MWA_projects}}"
     state: directory
-  when: not stat.MWA_projects.exists
+  when: not MWA_projects.stat.exists
 
 - name: "stop mysql service"
   service:
