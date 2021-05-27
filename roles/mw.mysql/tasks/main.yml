@@ -51,15 +51,15 @@
   when: mysql_new_root_pass.changed
 
 # deplace directory mysql
-- name: stat MWA
-  stat: path="{{MWA_projects}}"
-  register: MWA
+#- name: stat MWA
+ # stat: path="{{MWA_projects}}"
+ # register: MWA
 
 - name: create directory structure mysql
   file:
     path: "{{MWA_projects}}"
     state: directory
-  when: not MWA.stat.exists
+  #when: not MWA.stat.exists
 
 - name: "stop mysql service"
   service:
