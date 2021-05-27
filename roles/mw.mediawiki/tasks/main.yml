@@ -2,15 +2,15 @@
 # tasks file for mw.mediawiki
 #Création directory, recup des tar et decompress
 # check signature application
-- name: stat server
-  stat: path="{{server_disc}}"
-  register: server
+#- name: stat server
+ # stat: path="{{server_disc}}"
+#  register: server
 
 - name : Directory FS
   file:
     path: "{{server_disc}}"
     state: directory
-  when: not server.stat.exists
+ # when: not server.stat.exists
 #    creates: "{{ item }}"
 
 
