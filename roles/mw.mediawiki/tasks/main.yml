@@ -120,8 +120,15 @@
   args:
     chdir: "{{mediawiki}}/maintenance"
 
-- name: sed
-  shell: sed -i 's/wiki\.png/GRA-135\.png/' "{{mediawiki}}/LocalSettings.php"
+- name: "edit LocalSettings.php"
+  lineinfile:
+    dest: "{{mediawiki}}/LocalSettings.php"
+    regexp: '^\$wgLogos'
+    line: "$wgLogos = [ '1x' => \"$wgResourceBasePath/resources/assets/GRA-135.png\" ];"
+
+
+#- name: sed
+# shell: sed -i 's/wiki\.png/GRA-135\.png/' "{{mediawiki}}/LocalSettings.php"
 
 #- name: Enable site
  # command: "a2ensite mediawiki.conf"
