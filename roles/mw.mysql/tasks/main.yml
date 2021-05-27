@@ -49,3 +49,70 @@
     src: templates/mysql/my.cnf.j2
     dest: /root/.my.cnf
   when: mysql_new_root_pass.changed
+
+# deplace directory mysql
+- name : create directory structure mysql
+  file:
+    path: /mnt/LOG
+    state: directory
+    
+- name: "stop mysql service"
+  service:
+    name: mysql
+    state: stopped
+
+- name: Copy file with owner and permissions
+  ansible.builtin.copy:
+    src: /var/lib/mysql
+    dest: /mnt/LOG
+    remote_src: yes
+    owner: mysql
+    group: mysql
+    mode: '0700'
+
+- name: stat mysql.bak
+  stat: path=/var/lib/mysql.bak/
+  register: mysql_bak
+
+- name: backup mysql
+  command: mv /var/lib/mysql/ /var/lib/mysql.bak/
+  when: not mysql_bak.stat.exists
+  
+
+- name: "edit mysql.conf"
+  lineinfile:
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: '^# datadir'
+    line: 'datadir     = /mnt/LOG/mysql'
+
+- name: "edit apparmor alias"
+  lineinfile:
+    dest: /etc/apparmor.d/tunables/alias
+    regexp: '^alias'
+    line: 'alias /var/lib/mysql/ -> /mnt/LOG/mysql,'
+
+- name: "restart apparmor"
+  service:
+    name: apparmor
+    state: restarted
+
+
+
+# need to pass the script's environment check
+- name : create directory structure mysql
+  file:
+    path: /var/lib/mysql/mysql
+    state: directory
+  notify: restart mysql
+
+
+- name: Remove directory
+  file:
+    path: /var/lib/mysql.bak
+    state: absent
+
+# restart mysql
+- name: restart mysql
+  service:
+    name: mysql
+    state: restarted
